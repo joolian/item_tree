@@ -76,4 +76,6 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+  # As we are using figaro, need to tell rails not to look in secrets.yml for secret_key_base
+  config.secret_key_base = ENV["SECRET_KEY_BASE"]
 end
