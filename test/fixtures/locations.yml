@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ancestry: MyString
+  is_location: false
+  ancestry: MyString
+  item_id: 1
+
+two:
+  ancestry: MyString
+  is_location: false
+  ancestry: MyString
+  item_id: 1
