@@ -11,6 +11,6 @@
  * file per style scope.
  */
 
-@import "bum";
-@import "jstree-default";
-@import "jstree-default-dark";
+@import "bum.scss";
+@import "jstree-default.scss";
+@import "jstree-default-dark.scss";
