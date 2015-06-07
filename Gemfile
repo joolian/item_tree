@@ -23,11 +23,10 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
-gem 'ancestry'
+#gem 'ancestry'
 
+# For setting environment variables on Heroku without exposing secrets in public repositories on GitHub
 gem  'figaro'
-
-#gem 'jstree-rails-4'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -48,7 +47,8 @@ group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 end
-
+# For deplyment to Heroku
 gem 'rails_12factor', group: :production
 
+# For deployment to Heroku
 ruby '2.2.2'
