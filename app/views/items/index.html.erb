@@ -1,26 +1,5 @@
-<h1>Items#index</h1>
-<p>Find me in app/views/items/index.html.erb</p>
-<div><%= link_to 'Add item', new_item_path %>
-<div>
-	<div>Name</div>
-	<div>Code</div>
-</div>
-<% @items.each do |item| %>
-	<div class='test'>
-		<div><%= item.name %></div>
-		<div><%= item.code %></div>
-	</div>
-<% end %>
-
-<div id='tree'>
-    <ul>
-      <li>Root node 1
-        <ul>
-          <li id="child_node_1">Child node 1</li>
-          <li>Child node 2</li>
-        </ul>
-      </li>
-      <li>Root node 2</li>
-    </ul>
+<div class='content'>
+	<h1>Items</h1>
+	<%= render partial: 'locations_tree' %>
 </div>
 	

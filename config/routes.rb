@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   get 'trees/basic_html'
-
+  
+  get 'items/move_item' => 'items#move_item'	
   resources :items
 
 
@@ -8,7 +9,7 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'trees#basic_html'
+  root 'items#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

@@ -1,0 +1,77 @@
+
+/*************Edit table ****************/
+
+.edit-table {
+		display: table;
+		table-layout: fixed;		
+}
+.edit-row {
+		display: table-row;
+}
+.edit-cell {
+		display: table-cell;
+		padding: 10pt 0pt 3pt 0pt;	
+		vertical-align:top;
+		&:first-of-type {
+			max-width: 225px;
+		};
+		textarea {
+		min-height: 100px;
+		
+		}
+		.small {
+				color: #666666;
+				display: block;
+				font-size: 11px;
+				font-weight: normal;
+				text-align: left;
+				width: 200px;
+				margin: 0 0 0 5px;
+		}
+		label {
+				display: block;
+			    font-weight:bold;
+			    width:250px;
+		}
+		textarea {
+				width: 400px;
+		}
+		input[type=text] {
+				width: 250px;
+		}
+
+		input[type=text].date {
+				width: 125px;
+		}
+		input[type=text].item_name_txt {
+				width: 213px;
+				height: 22px;
+		}
+		select {
+				width: 250px;
+		}
+}
+
+.locations-tree-wrapper {
+	width: 270px;
+	padding: 3px 5px 3px 5px;
+}
+.child-attribute {
+		display: table-row;
+		margin: 0px 0px 6px 0px;
+}
+.child-attribute-element {
+		display: table-cell;
+		vertical-align: middle;
+		padding: 3px 5px 3px 0px;
+		/*border: solid 1px black;*/
+}
+.child-attribute-element:first-of-type {
+	/*width: 150px;*/
+}
+.child-attribute-element input {
+		max-width:200px;
+}
+.remove_fields i.fa-circle {
+		color: #EE2E2E;
+}

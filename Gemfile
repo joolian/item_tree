@@ -28,6 +28,8 @@ gem 'ancestry'
 # For setting environment variables on Heroku without exposing secrets in public repositories on GitHub
 gem  'figaro'
 
+gem 'ancestry'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

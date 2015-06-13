@@ -1,0 +1,63 @@
+$(document).ready(function(){
+
+	$('#finder').jstree({
+		"core" : {
+			'check_callback' : function (operation, node, node_parent, node_position, more) {
+				if (operation === "move_node"){
+					// Can't create new root node
+					if (node_parent.id === '#'){return false}
+					// New parent must be a location
+					if (node_parent.li_attr.rel === 'location'){return true}
+				}
+				// Can't copy node
+				if (operation === "copy_node") {return false;}
+			},
+			"themes" : {"stripes" : true,
+					"name" : "default"
+	 		},
+			'types' : {
+				"default" : { "icon" : "bum"}
+			}
+		},
+		'types' : {
+			"root" : { "icon" : "<%= asset_path('root.png') %>"},
+			"location" : {"icon" : "<%= asset_path('location.png') %>"},
+			"thing" : { "icon" : "<%= asset_path('thing1.png') %>"},
+		},
+		"plugins" : [ "dnd", "types", "wholerow" ]
+	})
+	.on('changed.jstree', function(e, data){
+	/* links to items#show for item */
+		//jsTree_node_properties(data.node);
+		window.location.href = data.node.a_attr.href;
+	})
+	.on('move_node.jstree', function(e, data){
+		//restrictions:
+		// no copy on move
+		// no reorder (position > 0)
+		// new parent must be a location
+		// can't move root: but cant do this anyway by definition
+		var moved = data.node.id;
+		var moved_to = data.parent
+		var position = 0
+		//alert(data.position);
+		var url = '/items/move_item';
+		$.ajax({ type: 'GET', dataType: 'script', url: url,
+			 data: {node_moved: moved, target_node: moved_to, position: position },
+			 success: function(){ 
+
+			 }
+		});
+	});
+});
+
+function jsTree_node_properties(node) {
+/* iterates through a jsTree node to display all properties */
+/* pass data.node to function */
+	$.each(node, function(name, value) {
+		/*{ alert(name + " : "  + value) }*/
+		{ console.log(name + " : "  + value) }
+		if ($.type(value) == 'object')
+			{ jsTree_node_properties(value) }
+	});
+}
