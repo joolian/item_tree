@@ -23,8 +23,6 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
-gem 'ancestry'
-
 # For setting environment variables on Heroku without exposing secrets in public repositories on GitHub
 gem  'figaro'
 
