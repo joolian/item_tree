@@ -2,6 +2,7 @@ class ItemsController < ApplicationController
   before_action :set_item, only: [:show, :edit, :update, :destroy]
   
   def index
+    @no_records = Item.count
     @items = Item.all
     @locations = Location.location_tree
   end
