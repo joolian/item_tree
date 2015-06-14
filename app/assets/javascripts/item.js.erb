@@ -1,5 +1,7 @@
 $(document).ready(function(){
-
+	
+	$("#item_path").jBreadCrumb();
+	
 	$('#finder').jstree({
 		"core" : {
 			'check_callback' : function (operation, node, node_parent, node_position, more) {
@@ -7,36 +9,77 @@ $(document).ready(function(){
 					// Can't create new root node
 					if (node_parent.id === '#'){return false}
 					// New parent must be a location
-					if (node_parent.li_attr.rel === 'location'){return true}
+					//if (node_parent.li_attr.rel === 'location'){return true}
+					//jsTree_node_properties(node_parent);
+					if (node_parent.state.type === 'thing'){return false}
 				}
 				// Can't copy node
-				if (operation === "copy_node") {return false;}
+				if (operation === "copy_node") {return false}
 			},
-			"themes" : {"stripes" : true,
+			"themes" : { "stripes" : true,
 					"name" : "default"
-	 		},
-			'types' : {
-				"default" : { "icon" : "bum"}
-			}
+	 		}
 		},
 		'types' : {
 			"root" : { "icon" : "<%= asset_path('root.png') %>"},
 			"location" : {"icon" : "<%= asset_path('location.png') %>"},
 			"thing" : { "icon" : "<%= asset_path('thing1.png') %>"},
 		},
-		"plugins" : [ "dnd", "types", "wholerow" ]
+		'contextmenu' : {
+			'select_node' : false,
+			'items' : function(node) { 
+				var tmp = $.jstree.defaults.contextmenu.items();
+				tmp  = {
+					'View': {
+						'label' : 'View',
+						'action' : function(data) {
+							var inst = $.jstree.reference(data.reference);
+							node_obj = inst.get_node(data.reference);
+							window.location.href = node_obj.a_attr.href;					
+						}					
+					},
+					'Edit': {
+						'label' : 'Edit',
+						'action' : function(data) {
+							var inst = $.jstree.reference(data.reference);
+							node_obj = inst.get_node(data.reference);
+							window.location.href = node_obj.a_attr.href + "/edit";					
+						}					
+					},
+					'AddItem' : {
+						'label' : 'Add item',
+						'action' : function(data) {
+							var inst = $.jstree.reference(data.reference);
+							node_obj = inst.get_node(data.reference);
+							window.location.href = '/items/new?item_id=' + node_obj.id						
+						}
+					},
+					'Open' : {
+						'label' : 'Open'
+					}	
+				}				
+				if (node.state.type === 'thing') { 
+					delete tmp.AddItem; // Can only add an item to a location
+					delete tmp.Open; // An thing has no children by definition
+				};
+				return tmp;
+			}
+		},
+		
+		"plugins" : [ "dnd", "types", "wholerow", "contextmenu" ]
 	})
 	.on('changed.jstree', function(e, data){
-	/* links to items#show for item */
+		// links to items#show for item. Ok for now, but will use this for different function later
 		//jsTree_node_properties(data.node);
 		window.location.href = data.node.a_attr.href;
 	})
 	.on('move_node.jstree', function(e, data){
 		//restrictions:
-		// no copy on move
-		// no reorder (position > 0)
+		// no copy on move, yet
+		// no reorder (position > 0) as items will always be sorted
 		// new parent must be a location
-		// can't move root: but cant do this anyway by definition
+		// Can't move root if there is only one root, but will
+		// need to add rule if we allow more than one root, such as when a subtree is opened.
 		var moved = data.node.id;
 		var moved_to = data.parent
 		var position = 0

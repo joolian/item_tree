@@ -1,9 +1,7 @@
 Rails.application.routes.draw do
-  get 'trees/basic_html'
-  
+
   get 'items/move_item' => 'items#move_item'	
   resources :items
-
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
