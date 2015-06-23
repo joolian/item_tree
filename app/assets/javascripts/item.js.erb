@@ -4,28 +4,25 @@ $(document).ready(function(){
 	
 	$('#finder').jstree({
 		"core" : {
-
-				'data' : {
-					'url' : "/items",
-					'dataType' : 'json'
-				},
-				'check_callback' : function (operation, node, node_parent, node_position, more) {
-				if (operation === "move_node"){
-					// Can't create new root node
-					if (node_parent.id === '#'){return false}
-					// New parent must be a location
-					//if (node_parent.li_attr.rel === 'location'){return true}
-					//jsTree_node_properties(node_parent);
-					if (node_parent.state.type === 'thing'){return false}
-					return true;
-				}
-				// Can't copy node
-				if (operation === "copy_node") {return false};
-									//return true;
+			'data' : {
+				'url' : "/items",
+				'dataType' : 'json'
 			},
-
+			'check_callback' : function (operation, node, node_parent, node_position, more) {
+			if (operation === "move_node"){
+				// Can't create new root node
+				if (node_parent.id === '#'){return false}
+				// New parent must be a location
+				//if (node_parent.li_attr.rel === 'location'){return true}
+				//jsTree_node_properties(node_parent);
+				if (node_parent.state.type === 'thing'){return false}
+				return true;
+			}
+			// Can't copy node
+			if (operation === "copy_node") {return false};
+			},
 			"themes" : { "stripes" : true,
-					"name" : "default"
+				"name" : "default"
 	 		}
 		},
 		'types' : {

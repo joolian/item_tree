@@ -9,11 +9,10 @@ class Item < ActiveRecord::Base
   # 'moved_to' is the item dropped onto.
   # 'position' is the position relative to 'moved_to'.
     if moved then
-      location_moved = Location.find(Item.find(moved).location)
-      location_target = Location.find(Item.find(moved_to).location)
-      new_parent_id = location_target.id
+      location_moved = Item.find(moved).location
+      new_parent_id = Item.find(moved_to).location.id
       if location_path_is_continuous(new_parent_id) then
-      	location_moved.parent_id = new_parent_id
+        location_moved.parent_id = new_parent_id
       	location_moved.save
       	return location_moved.parent_id
       end
@@ -25,7 +24,7 @@ class Item < ActiveRecord::Base
   end
   
 	def item_path
-		self.location.path.map{ |ancestor|ancestor.item }
+    self.location.path.location_tree.map{ |ancestor|ancestor.item }
 	end
   
 end

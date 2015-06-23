@@ -52,6 +52,7 @@ class ItemsController < ApplicationController
   
   def breadcrumb
     @item_path = Item.find(params[:open_id]).item_path
+    logger.debug" end of breadcrumb item path"
     respond_to do |format|
       format.js
     end
@@ -62,7 +63,7 @@ class ItemsController < ApplicationController
 			Item.move_location(params[:node_moved],params[:target_node])
 		end
 		@locations = Location.location_tree
-		render action: 'index'
+		#render action: 'index' Just need to report success or failure as no need to update jsTree data
 	end 
    
   private
