@@ -1,0 +1,6 @@
+<ul>
+	<% @item_path.each do |i| %>
+		<% i == @item_path.last ? seperator = "" : seperator = ">" %>
+		<li><%= link_to i.name, items_path(open_id: i.id) %></li>
+	<% end %>
+</ul>

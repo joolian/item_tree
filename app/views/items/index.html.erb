@@ -1,6 +1,12 @@
 <div class='content'>
 	<h1>Items</h1>
 	<%= link_to 'Create first item', new_item_path if @no_item_records %>
-	<%= render partial: 'locations_tree' %>
+	<div id="finder">
+	</div>
+	<div class="breadCrumbHolder module">
+		<div id="item_path" class="breadCrumb module">
+			<%= render partial: 'item_path'%>
+		</div>
+	</div>
 </div>
 	

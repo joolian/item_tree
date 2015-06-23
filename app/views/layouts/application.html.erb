@@ -6,7 +6,9 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
 </head>
-<body>
+<body data-no-turbolink="true">
+<%# turn off turbolinks in all views, as links to item/index fail to trigger loading of jstree! %>
+<%# need to fix this  or just turn off turbolinks for index view %>
 
 <%= yield %>
 

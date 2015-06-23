@@ -1,0 +1,2 @@
+<% type = location.is_location ? "location" : "thing" %>
+{"id" : "<%= location.item.id.to_s %>","text" : "<%= location.item.name %>","type" : "<%= type %>","a_attr" : {"href" : "<%= item_path(id: location.item.id) %>"},"children" : [<% if !sub_locations.empty? then %><%= nested_locations_json sub_locations %><% end %>]}

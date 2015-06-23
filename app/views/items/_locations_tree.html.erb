@@ -1,7 +1,6 @@
-<div id = "finder">
-		<ul>
-			<%= nested_locations @locations.arrange(order: :is_location) %>
-		</ul>
-</div>
+<ul>
+	<%= nested_locations_html @locations.arrange(order: :is_location) %>
+</ul>
+
 
 

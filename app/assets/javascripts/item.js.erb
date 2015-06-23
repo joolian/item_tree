@@ -4,7 +4,12 @@ $(document).ready(function(){
 	
 	$('#finder').jstree({
 		"core" : {
-			'check_callback' : function (operation, node, node_parent, node_position, more) {
+
+				'data' : {
+					'url' : "/items",
+					'dataType' : 'json'
+				},
+				'check_callback' : function (operation, node, node_parent, node_position, more) {
 				if (operation === "move_node"){
 					// Can't create new root node
 					if (node_parent.id === '#'){return false}
@@ -12,10 +17,13 @@ $(document).ready(function(){
 					//if (node_parent.li_attr.rel === 'location'){return true}
 					//jsTree_node_properties(node_parent);
 					if (node_parent.state.type === 'thing'){return false}
+					return true;
 				}
 				// Can't copy node
-				if (operation === "copy_node") {return false}
+				if (operation === "copy_node") {return false};
+									//return true;
 			},
+
 			"themes" : { "stripes" : true,
 					"name" : "default"
 	 		}
@@ -55,7 +63,21 @@ $(document).ready(function(){
 						}
 					},
 					'Open' : {
-						'label' : 'Open'
+						'label' : 'Open',
+						'action' : function(data) {
+							var inst = $.jstree.reference(data.reference);
+							node_obj = inst.get_node(data.reference);
+							if (node_obj.type === "location"){
+								$.ajax({
+									type: 'Get', url: '/items/', dataType: 'json', data: { open_id: node_obj.id},
+									success: function(newData) {
+										$('#finder').jstree().settings.core.data = newData;
+										$('#finder').jstree(true).refresh(true,true);
+										update_breadcrumb(node_obj.id);
+									}
+								});						
+							}					
+						},
 					}	
 				}				
 				if (node.state.type === 'thing') { 
@@ -71,7 +93,8 @@ $(document).ready(function(){
 	.on('changed.jstree', function(e, data){
 		// links to items#show for item. Ok for now, but will use this for different function later
 		//jsTree_node_properties(data.node);
-		window.location.href = data.node.a_attr.href;
+		//window.location.href = data.node.a_attr.href;
+		update_breadcrumb(data.node.id);
 	})
 	.on('move_node.jstree', function(e, data){
 		//restrictions:
@@ -88,11 +111,18 @@ $(document).ready(function(){
 		$.ajax({ type: 'GET', dataType: 'script', url: url,
 			 data: {node_moved: moved, target_node: moved_to, position: position },
 			 success: function(){ 
-
 			 }
 		});
 	});
 });
+
+function update_breadcrumb(node_id) {
+	$.ajax({
+		type: 'Get', url: '/items/breadcrumb', dataType: 'script', data: { open_id: node_id},
+		success: function() {
+		}
+	});		
+}
 
 function jsTree_node_properties(node) {
 /* iterates through a jsTree node to display all properties */

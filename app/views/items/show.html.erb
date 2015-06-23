@@ -2,24 +2,23 @@
 	<h1>Item</h1>
 	<div class="edit-table">
 		<div class="edit-row">
+			<div class="edit-cell"><%= link_to 'Cancel', items_path %></div>
+		</div>
+		<div class="edit-row">
 			<div class="edit-cell">Name:</div>
 			<div class="edit-cell"><%= @item.name %></div>
-			</div>
-
+		</div>
 		<div class="edit-row">
 			<div class="edit-cell">Location: </div>
 			<div class="edit-cell"><%= "#{@location_name} (#{@location_code})" %></div>
-			</div>
-
+		</div>
 		<div class="edit-row">
 			<div class="edit-cell">Code:</div>
 			<div class="edit-cell"><%= @item.code %></div>
-			</div>
-
+		</div>
 		<div class="edit-row">
 			<div class="edit-cell">Type: </div>
 			<div class="edit-cell"><%= @item.location.is_location ? "Location" : "Item" %></div>
-			</div>
 		</div>
 		<div class="edit-row">
 			<div class="edit-cell"><%= link_to 'Add item', new_item_path(item_id: @item.id) %></div>
@@ -27,6 +26,7 @@
 		<div class="edit-row">
 			<div class="edit-cell"><%= link_to 'Edit item', edit_item_path %></div>
 		</div>
+
 	</div>
 
 </div>

@@ -3,8 +3,11 @@ class ItemsController < ApplicationController
   
   def index
     @no_item_records = Item.count ? false : true
-    @items = Item.all
-    @locations = Location.location_tree
+    set_tree_root
+		respond_to do |format|
+			format.html
+			format.json
+		end
   end
   
   def show
@@ -47,6 +50,13 @@ class ItemsController < ApplicationController
   def destroy
   end
   
+  def breadcrumb
+    @item_path = Item.find(params[:open_id]).item_path
+    respond_to do |format|
+      format.js
+    end
+  end
+  
 	def move_item
 		if params[:node_moved] then
 			Item.move_location(params[:node_moved],params[:target_node])
@@ -56,7 +66,24 @@ class ItemsController < ApplicationController
 	end 
    
   private
-  
+	
+  def set_tree_root
+    #session[:tree_root]= nil
+		# Note: in use in FM app the root item will be Organisation,
+    # therefore will need to change this method.
+    open_id = params[:open_id]
+    if session[:tree_root]
+		  if params[:open_id]
+         session[:tree_root] = params[:open_id]
+       end
+		else
+			session[:tree_root] = Location.roots.first.item.id
+		end
+		@item = Item.find(session[:tree_root])
+    @locations = @item.location.descendants.location_tree
+		@item_path = @item.item_path
+	end
+    
   def set_item
     @item = Item.find(params[:id])
   end

@@ -1,0 +1,28 @@
+/*colors*/
+$text-color: #444;
+$menu-background: #25558E;
+$menu-highlight: #356094;
+$dark-blue: #2e6ab1;
+$input-border: #d3d3d3;
+$input-border-focus: #999999;
+$link: #4479BA;
+$link-hover: #356094;
+$link-active: #2E5481;
+
+/*mixins*/
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+          border-radius: $radius;
+}
+@mixin box-shadow ($top, $left, $blur, $color, $inset:""){
+    -webkit-box-shadow:$top $left $blur $color #{$inset};
+    -moz-box-shadow:$top $left $blur $color #{$inset};
+    box-shadow:$top $left $blur $color #{$inset};	
+}
+@mixin transition-duration($time) {
+    -webkit-transition-duration: $time;
+    -moz-transition-duration: $time;
+    transition-duration: $time;
+}

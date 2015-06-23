@@ -22,6 +22,10 @@ class Item < ActiveRecord::Base
   
   def self.location_path_is_continuous(new_parent_id)
     Location.find(new_parent_id).is_location ? true : false
-  end	
+  end
+  
+	def item_path
+		self.location.path.map{ |ancestor|ancestor.item }
+	end
   
 end

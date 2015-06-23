@@ -14,5 +14,7 @@
 //= require jquery_ujs
 //= require jstree
 //= require item
+//= require jquery.easing.1.3.js
+//= require jquery.jBreadCrumb.1.1.js
 //= require turbolinks
 //= require_tree .
