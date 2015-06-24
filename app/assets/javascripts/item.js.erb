@@ -77,7 +77,7 @@ $(document).ready(function(){
 						},
 					}	
 				}				
-				if (node.state.type === 'thing') { 
+				if (node.type === 'thing') {
 					delete tmp.AddItem; // Can only add an item to a location
 					delete tmp.Open; // An thing has no children by definition
 				};
@@ -89,7 +89,7 @@ $(document).ready(function(){
 	})
 	.on('changed.jstree', function(e, data){
 		// links to items#show for item. Ok for now, but will use this for different function later
-		//jsTree_node_properties(data.node);
+		jsTree_node_properties(data.node);
 		//window.location.href = data.node.a_attr.href;
 		update_breadcrumb(data.node.id);
 	})
