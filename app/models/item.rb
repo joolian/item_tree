@@ -3,6 +3,8 @@ class Item < ActiveRecord::Base
 	accepts_nested_attributes_for :location, allow_destroy: true, reject_if: :all_blank
   validates :name, presence: true
   validates :code, presence: true, uniqueness: { case_sensitive: false }
+  #TODO
+  # Need a validation so that an item that is a location cannot be changed to a thing if it has children.
   
   def self.move_location(moved, moved_to)
   # Used in conjuction with jstree drag and drop. 'moved' is the item dragged and dropped.
