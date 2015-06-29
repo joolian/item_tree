@@ -1,6 +1,6 @@
 <ul>
 	<% @item_path.each do |i| %>
-		<% i == @item_path.last ? seperator = "" : seperator = ">" %>
-		<li><%= link_to i.name, items_path(open_id: i.id) %></li>
+		<% i == @item_path.first ? root = true : root = false %>
+		<li><%= link_to i.name, items_path(open_id: i.id), data: {id: i.id, root: root} %></li>
 	<% end %>
 </ul>

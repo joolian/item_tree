@@ -18,7 +18,6 @@ class ItemsController < ApplicationController
     @item.id ? @new_record = @item.id :  @new_record = true
     parent_id = Item.find(params[:item_id]).location.id if params[:item_id]
 		@item.build_location(parent_id: parent_id)
-    #for ajax loading, can set initial state with 'data' ie root, empty, id, 
   end
 
   def edit
@@ -52,7 +51,6 @@ class ItemsController < ApplicationController
   
   def breadcrumb
     @item_path = Item.find(params[:open_id]).item_path
-    logger.debug" end of breadcrumb item path"
     respond_to do |format|
       format.js
     end
@@ -69,19 +67,25 @@ class ItemsController < ApplicationController
   private
 	
   def set_tree_root
-    #session[:tree_root]= nil
-		# Note: in use in FM app the root item will be Organisation,
+		# Note: in use in the FM app the root item will be Organisation,
     # therefore will need to change this method.
-    open_id = params[:open_id]
-    if session[:tree_root]
+    if session[:tree_root] then 
 		  if params[:open_id]
          session[:tree_root] = params[:open_id]
-       end
+      end
+      if params[:root] then
+        session[:show_organisation] = params[:root] == 'true'
+      end
 		else
 			session[:tree_root] = Location.roots.first.item.id
+      session[:show_organisation] = true
 		end
 		@item = Item.find(session[:tree_root])
-    @locations = @item.location.descendants.location_tree
+    if session[:show_organisation] then
+      @locations = @item.location.subtree.location_tree
+    else
+      @locations = @item.location.descendants.location_tree
+    end
 		@item_path = @item.item_path
 	end
     
