@@ -28,5 +28,4 @@ class Item < ActiveRecord::Base
 	def item_path
     self.location.path.location_tree.map{ |ancestor|ancestor.item }
 	end
-  
 end

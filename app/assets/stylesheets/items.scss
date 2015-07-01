@@ -1,3 +1,33 @@
 #finder {
-		width: 500px;
+		width: 510px;
+		border:solid 1px $input-border;
+		//padding:5px;
+		min-height: 50px;
+		border-radius: 4px 4px 0px 0px;
+}
+
+.instructions {
+		width: 510px;
+		padding-bottom: 10px;
+}
+
+#search-field {
+		padding: 5px 5px 5px 5px;
+		display: table;
+		position: relative;
+		z-index: 1002;
+		select {
+				width: 180px;
+		}
+		a {
+				color: $link;
+		}
+		a:hover {
+				color: $link-hover;
+		}
+}
+.centered {
+		display: table-cell;
+		vertical-align: middle;
+		padding: 0px 5px 0px 5px;
 }

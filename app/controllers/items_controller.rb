@@ -3,7 +3,12 @@ class ItemsController < ApplicationController
   
   def index
     @no_item_records = Item.count ? false : true
-    set_tree_root
+    if params[:query].present? then
+      @locations = Location.text_search(params[:query])
+      logger.debug(@locations.length)
+    else
+      set_tree_root
+    end
 		respond_to do |format|
 			format.html
 			format.json
@@ -50,7 +55,11 @@ class ItemsController < ApplicationController
   end
   
   def breadcrumb
-    @item_path = Item.find(params[:open_id]).item_path
+    if params[:open_id] == 'root' then
+      @item_path = Location.roots.first.item.item_path
+    else
+      @item_path = Item.find(params[:open_id]).item_path
+    end
     respond_to do |format|
       format.js
     end
@@ -63,6 +72,18 @@ class ItemsController < ApplicationController
 		@locations = Location.location_tree
 		#render action: 'index' Just need to report success or failure as no need to update jsTree data
 	end 
+  
+  def search
+    if params[:query].present? then
+      @locations = Location.text_search(params[:query])
+      logger.debug(@locations.length)
+    else
+      set_tree_root
+    end
+		respond_to do |format|
+			format.json
+		end
+  end
    
   private
 	
@@ -70,10 +91,10 @@ class ItemsController < ApplicationController
 		# Note: in use in the FM app the root item will be Organisation,
     # therefore will need to change this method.
     if session[:tree_root] then 
-		  if params[:open_id]
+		  if params[:open_id].present?
          session[:tree_root] = params[:open_id]
       end
-      if params[:root] then
+      if params[:root].present? then
         session[:show_organisation] = params[:root] == 'true'
       end
 		else

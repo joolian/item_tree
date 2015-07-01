@@ -35,8 +35,11 @@
 	height: 21px;
 	overflow: hidden;
 	width: 500px;
-	padding:5px;
-	border:solid 1px #dedede;
+	padding: 5px;
+	border-left: solid 1px $input-border;
+	border-right: solid 1px $input-border;
+	border-bottom: solid 1px $input-border;
+	border-radius: 0px 0px 4px 4px;
 	background:#fff;
 }
 .breadCrumb ul

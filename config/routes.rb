@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'items/search' => 'items#search'
   get 'items/breadcrumb' => 'items#breadcrumb'
   get 'items/move_item' => 'items#move_item'	
   resources :items

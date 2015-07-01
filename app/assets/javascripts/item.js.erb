@@ -1,15 +1,31 @@
 $(document).ready(function(){
-	$("#item_path").on( "click", "a", function(event) {
+	$('#item_path').on( "click", "a", function(event) {
 		event.preventDefault();
 		var id = $(this).data('id');
 		var root = $(this).data('root');
 		getBranch(id, root);
 	});
 	
-	$("#item_path").jBreadCrumb();
+	$('#item_path').jBreadCrumb();
+	
+	$('#search').on('keyup', function() {
+		var query = $(this).val();
+		if (query.length > 2 ){
+			$.ajax({
+				type: 'Get', url: '/items/search', dataType: 'json', data: { query: query },
+				success: function(newData) {
+					$('#finder').jstree().settings.core.data = newData;
+					$('#finder').jstree(true).refresh(true,true);
+					$('#finder').jstree(true).save_state();
+					updateBreadcrumb('root');
+				}
+			});
+		}
+	});
 	
 	$('#finder').jstree({
 		"core" : {
+			'expand_selected_onload' : false,
 			'data' : {
 				'url' : "/items",
 				'dataType' : 'json'
@@ -30,6 +46,7 @@ $(document).ready(function(){
 				"name" : "default"
 	 		}
 		},
+		"state" : { "key" : "state_demo" },
 		'types' : {
 			"organisation" : {"icon" : "fa fa-institution"},
 			"location" : {"icon" : "fa fa-building-o"},
@@ -86,13 +103,14 @@ $(document).ready(function(){
 				return tmp;
 			}
 		},
-		"plugins" : [ "dnd", "types", "wholerow", "contextmenu" ]
+		"plugins" : [ "dnd", "types", "wholerow", "contextmenu", "state" ]
 	})
 	.on('changed.jstree', function(e, data){
 		// links to items#show for item. Ok for now, but will use this for different function later
 		jsTree_node_properties(data.node);
 		//window.location.href = data.node.a_attr.href;
 		updateBreadcrumb(data.node.id);
+		$('#finder').jstree(true).save_state();
 	})
 	.on('move_node.jstree', function(e, data){
 		//restrictions:
@@ -120,6 +138,7 @@ function getBranch(id, root) {
 		success: function(newData) {
 			$('#finder').jstree().settings.core.data = newData;
 			$('#finder').jstree(true).refresh(true,true);
+			$('#finder').jstree(true).save_state();
 			updateBreadcrumb(id);
 		}
 	});	
