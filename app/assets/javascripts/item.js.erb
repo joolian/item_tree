@@ -180,12 +180,17 @@ function getBranch(id, root) {
 	});	
 }
 
-function updateBreadcrumb(node_id, parent_item = false) {
+function updateBreadcrumb(node_id, parent_item) {
+	parent_item = defaultTo(parent_item, true);
 	$.ajax({
 		type: 'Get', url: '/items/breadcrumb', dataType: 'script', data: { open_id: node_id, parent_item: parent_item },
 		success: function() {
 		}
 	});		
+}
+
+function defaultTo(value, defaultValue) {
+    return typeof value !== "undefined" ? value : defaultValue;
 }
 
 function jsTree_node_properties(node) {
