@@ -21,6 +21,12 @@ class Item < ActiveRecord::Base
     end
   end
   
+  def parent_item
+    if self.location.parent_id then
+      Location.find(self.location.parent_id).item
+    end
+  end  
+  
   def self.location_path_is_continuous(new_parent_id)
     Location.find(new_parent_id).is_location ? true : false
   end

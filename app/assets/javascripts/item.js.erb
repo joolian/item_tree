@@ -10,7 +10,7 @@ $(document).ready(function(){
 	
 	$('#search').on('keyup', function() {
 		var query = $(this).val();
-		if (query.length > 2 ){
+		if (query.length >= 1 ){
 			$.ajax({
 				type: 'Get', url: '/items/search', dataType: 'json', data: { query: query },
 				success: function(newData) {
@@ -58,16 +58,17 @@ $(document).ready(function(){
 			'items' : function(node) { 
 				var tmp = $.jstree.defaults.contextmenu.items();
 				tmp  = {
-					'View': {
+					'View' : {
 						'label' : 'View',
 						'icon' : 'fa fa-eye',
 						'action' : function(data) {
+							//get <a> DOMElement of node
 							var inst = $.jstree.reference(data.reference);
 							node_obj = inst.get_node(data.reference);
 							window.location.href = node_obj.a_attr.href;					
 						}					
 					},
-					'Edit': {
+					'Edit' : {
 						'label' : 'Edit',
 						'icon' : 'fa fa-edit',
 						'action' : function(data) {
@@ -75,6 +76,32 @@ $(document).ready(function(){
 							node_obj = inst.get_node(data.reference);
 							window.location.href = node_obj.a_attr.href + "/edit";					
 						}					
+					},
+					'Delete' : {
+						'label' : 'Delete',
+						'icon' : 'fa fa-trash',
+						'action' : function(data) {
+							var inst = $.jstree.reference(data.reference);
+							node_obj = inst.get_node(data.reference);
+							//if the node to delete is the only node then we wont be able set the node
+							//in the call to updateBreadcrumb in the slect_node event. Therefore, need to get item path
+							//in the controller.
+							//TODO If we store the root path of the tree as a data attribute in #finder, then we wont need to
+							// hit the database to get the full path for the breadcrumb each time we select a node.
+							var select_parent = ( $("#finder").find("li").length === 1 );
+							$.ajax({
+								type: "POST",
+								url: "/items/" + node_obj.id,
+								dataType: "script",
+								data: { "_method" : "delete", "select_parent" : select_parent },
+								success: function(){
+									inst.delete_node(node_obj);
+								},
+								error: function(){
+									alert("Cannot delete item");
+								}
+							});		
+						}
 					},
 					'AddItem' : {
 						'label' : 'Add item',
@@ -98,19 +125,27 @@ $(document).ready(function(){
 				}				
 				if (node.type === 'thing') {
 					delete tmp.AddItem; // Can only add an item to a location
-					delete tmp.Open; // An thing has no children by definition
+					delete tmp.Open; // A thing has no children by definition
 				};
 				return tmp;
 			}
 		},
 		"plugins" : [ "dnd", "types", "wholerow", "contextmenu", "state" ]
 	})
-	.on('changed.jstree', function(e, data){
-		// links to items#show for item. Ok for now, but will use this for different function later
-		jsTree_node_properties(data.node);
-		//window.location.href = data.node.a_attr.href;
+	.on('delete_node.jstree', function( e, data ){
+		var inst = data.instance
+		if ( inst.get_next_dom( data.node, true ) ) {
+			inst.select_node( inst.get_next_dom( data.node, true ), true, true )
+		}
+		else if ( inst.get_prev_dom( data.node, true ) ) {
+				inst.select_node( inst.get_prev_dom(data.node, true ), true, true )
+			}
+		else if ( data.node.parent != "#" ){
+			inst.select_node( data.node.parent, true, true )
+		}
+	})
+	.on('select_node.jstree', function(e, data){
 		updateBreadcrumb(data.node.id);
-		$('#finder').jstree(true).save_state();
 	})
 	.on('move_node.jstree', function(e, data){
 		//restrictions:
@@ -130,7 +165,8 @@ $(document).ready(function(){
 			 }
 		});
 	});
-});
+})
+
 
 function getBranch(id, root) {
 	$.ajax({
@@ -144,9 +180,9 @@ function getBranch(id, root) {
 	});	
 }
 
-function updateBreadcrumb(node_id) {
+function updateBreadcrumb(node_id, parent_item = false) {
 	$.ajax({
-		type: 'Get', url: '/items/breadcrumb', dataType: 'script', data: { open_id: node_id},
+		type: 'Get', url: '/items/breadcrumb', dataType: 'script', data: { open_id: node_id, parent_item: parent_item },
 		success: function() {
 		}
 	});		

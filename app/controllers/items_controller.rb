@@ -3,12 +3,7 @@ class ItemsController < ApplicationController
   
   def index
     @no_item_records = Item.count ? false : true
-    if params[:query].present? then
-      @locations = Location.text_search(params[:query])
-      logger.debug(@locations.length)
-    else
-      set_tree_root
-    end
+    set_tree_root
 		respond_to do |format|
 			format.html
 			format.json
@@ -52,11 +47,24 @@ class ItemsController < ApplicationController
   end
 
   def destroy
+		if params[:select_parent] == "true" then
+      @item_path = @item.parent_item.item_path
+    else
+      @itemPath = false
+    end
+		if @item.location.can_be_destroyed
+			@item.destroy
+			render "destroy.js.erb"
+		else
+			render status: 400
+		end
   end
   
   def breadcrumb
     if params[:open_id] == 'root' then
       @item_path = Location.roots.first.item.item_path
+    elsif params[:parent_id] == 'true'
+      @item_path = Item.parent_item.item_path
     else
       @item_path = Item.find(params[:open_id]).item_path
     end
@@ -70,7 +78,7 @@ class ItemsController < ApplicationController
 			Item.move_location(params[:node_moved],params[:target_node])
 		end
 		@locations = Location.location_tree
-		#render action: 'index' Just need to report success or failure as no need to update jsTree data
+		# render: Just need to report success or failure as no need to update jsTree data
 	end 
   
   def search

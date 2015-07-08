@@ -1,0 +1,4 @@
+<% if @item_path then %>
+	$('#item_path').html("<%= escape_javascript(render(:partial => 'item_path')) %>");
+	$("#item_path").jBreadCrumb();
+<% end %>
