@@ -133,15 +133,15 @@ $(document).ready(function(){
 		"plugins" : [ "dnd", "types", "wholerow", "contextmenu", "state" ]
 	})
 	.on('delete_node.jstree', function( e, data ){
-		var inst = data.instance
+		var inst = data.instance;
 		if ( inst.get_next_dom( data.node, true ) ) {
-			inst.select_node( inst.get_next_dom( data.node, true ), true, true )
+			inst.select_node( inst.get_next_dom( data.node, true ), true, true );
 		}
 		else if ( inst.get_prev_dom( data.node, true ) ) {
-				inst.select_node( inst.get_prev_dom(data.node, true ), true, true )
+			inst.select_node( inst.get_prev_dom(data.node, true ), true, true );
 			}
 		else if ( data.node.parent != "#" ){
-			inst.select_node( data.node.parent, true, true )
+			inst.select_node( data.node.parent, true, true );
 		}
 	})
 	.on('select_node.jstree', function(e, data){
