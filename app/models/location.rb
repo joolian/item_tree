@@ -1,5 +1,5 @@
 class Location < ActiveRecord::Base
-	has_ancestry orphan_strategy: :rootify, cache_depth: true
+	has_ancestry orphan_strategy: :rootify
 	belongs_to :item, inverse_of: :location
   
   validates :item, presence: true

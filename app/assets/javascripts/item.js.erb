@@ -21,8 +21,13 @@ $(document).ready(function(){
 		var query = $(this).val();
 		if (query.length >= 1 ){
 			$('#finder').data('search', { on: true, query: query });
-			$('#finder').jstree(true).refresh();
+			//$('#finder').jstree(true).refresh();
 		}
+		else {
+			$('#finder').data('search', { on: false, query: query });
+			//$('#finder').jstree(true).refresh();
+		}
+		$('#finder').jstree(true).refresh();
 	});
 	
 	$('#finder').jstree({
