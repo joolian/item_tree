@@ -50,7 +50,7 @@ class ItemsController < ApplicationController
   end
 
   def destroy
-		if params[:select_parent] == "true" then
+    if params[:select_parent] == "true" then
       @item_path = @item.parent_item.item_path
     else
       @itemPath = false
