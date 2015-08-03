@@ -21,17 +21,35 @@ class Item < ActiveRecord::Base
     end
   end
   
+  def self.root
+    Location.roots.first.item
+  end
+
+  def self.location_path_is_continuous(new_parent_id)
+    Location.find(new_parent_id).is_location ? true : false
+  end
+
+  def self.text_search(query)
+    Location.location_tree.where( "items.name ilike :q", q: "%#{query}%"  ).references(:items)
+  end
+
   def parent_item
     if self.location.parent_id then
       Location.find(self.location.parent_id).item
     end
-  end  
-  
-  def self.location_path_is_continuous(new_parent_id)
-    Location.find(new_parent_id).is_location ? true : false
   end
-  
-	def item_path
+
+  def children
+    self.location.children.location_tree
+  end
+
+  def item_path
     self.location.path.location_tree.map{ |ancestor|ancestor.item }
 	end
+
+	def can_be_destroyed
+    self.location.is_childless? ? true : false
+	end
+  
+
 end

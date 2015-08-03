@@ -3,9 +3,7 @@ class ItemsController < ApplicationController
   
   def index
     @no_item_records = Item.count ? false : true
-
-      #create_data
-      
+    #create_data 
     set_tree_root
 		respond_to do |format|
 			format.html
@@ -18,7 +16,6 @@ class ItemsController < ApplicationController
 
   def new
     @item = Item.new
-    @item.id ? @new_record = @item.id :  @new_record = true
     parent_id = Item.find(params[:item_id]).location.id if params[:item_id]
 		@item.build_location(parent_id: parent_id)
   end
@@ -41,21 +38,16 @@ class ItemsController < ApplicationController
     respond_to do |format|
       if @item.update(item_params)
         format.html { redirect_to @item, notice: 'Item was successfully updated.' }
-        format.json { head :no_content }
       else
         format.html { render action: 'edit' }
-        format.json { render json: @item.errors, status: :unprocessable_entity }
       end
     end
   end
 
   def destroy
-    if params[:select_parent] == "true" then
-      @item_path = @item.parent_item.item_path
-    else
-      @itemPath = false
-    end
-		if @item.location.can_be_destroyed
+		#if @item.location.can_be_destroyed
+    if @item.can_be_destroyed     
+      @item_path = params[:select_parent] == "true" ? @item.parent_item.item_path : false
 			@item.destroy
 			render "destroy.js.erb"
 		else
@@ -83,8 +75,7 @@ class ItemsController < ApplicationController
   
   def search
     if params[:query].present? then
-      @locations = Location.text_search(params[:query])
-      logger.debug(@locations.length)
+      @locations = Item.text_search(params[:query])      
     else
       set_tree_root
     end
@@ -94,7 +85,7 @@ class ItemsController < ApplicationController
   end
   
   def children
-    @locations = Item.find(params[:id]).location.children.location_tree
+    @locations = Item.find(params[:id]).children
     respond_to do |format|
       format.json {render 'index'}
     end
@@ -141,7 +132,7 @@ class ItemsController < ApplicationController
         session[:show_root] = params[:show_root] == 'true'
       end
 		else
-			session[:tree_root] = Location.roots.first.item.id
+			session[:tree_root] = Item.root.id   
       session[:show_root] = true
 		end
 		@item = Item.find(session[:tree_root])
@@ -149,7 +140,7 @@ class ItemsController < ApplicationController
       @locations = []
       @locations << @item.location
     else
-      @locations = @item.location.children.location_tree
+      @locations = @item.children
     end
 		@item_path = @item.item_path
 	end
