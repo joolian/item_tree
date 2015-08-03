@@ -2,8 +2,11 @@
 		width: 510px;
 		border:solid 1px $input-border;
 		//padding:5px;
-		min-height: 50px;
+		//min-height: 50px;
+		height: 200px;
 		border-radius: 4px 4px 0px 0px;
+		overflow: scroll;
+		display: block;
 }
 
 .instructions {

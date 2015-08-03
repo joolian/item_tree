@@ -1,4 +1,13 @@
+// TODO Add copy, cut, paste. Need to make sure that store cut/copy data between tree refresh
+//	otherwise will probably loose it
+// TODO put 'Cannot delete' message in proper dialog
+// TODO when all text in search box is deleted then clear nodes
+// TODO change styling of context menu
+// TODO Implement Load all without easy loading
+// TODO Update JStree version 1 form control for selecting an item, will need filter and branch pre-selection
+
 $(document).ready(function(){
+	//Change variable names and refactor
 	$('#item_path').on( "click", "a", function(event) {
 		event.preventDefault();
 		var id = $(this).data('id');
@@ -11,15 +20,8 @@ $(document).ready(function(){
 	$('#search').on('keyup', function() {
 		var query = $(this).val();
 		if (query.length >= 1 ){
-			$.ajax({
-				type: 'Get', url: '/items/search', dataType: 'json', data: { query: query },
-				success: function(newData) {
-					$('#finder').jstree().settings.core.data = newData;
-					$('#finder').jstree(true).refresh(true,true);
-					$('#finder').jstree(true).save_state();
-					updateBreadcrumb('root');
-				}
-			});
+			$('#finder').data('search', { on: true, query: query });
+			$('#finder').jstree(true).refresh();
 		}
 	});
 	
@@ -27,20 +29,37 @@ $(document).ready(function(){
 		"core" : {
 			'expand_selected_onload' : false,
 			'data' : {
-				'url' : "/items",
+				'url' : function(node) {
+					if ($('#finder').data('search').on === true) 
+						{ return '/items/search' }
+					else
+						{ return node.id === "#" ? "/items" : "/items/children"; }
+				},
+				'data' : function (node) {
+					if ($('#finder').data('search').on === true)
+						{ return { query: $('#finder').data('search').query}}
+					else {
+						if (node.id === "#")
+							{return {'root_id' : $("#finder").data("root_id"), 'show_root' : $("#finder").data("show_root")};
+						}
+						else {
+							return {'id' : node.id};
+						}
+					}
+				},
 				'dataType' : 'json'
 			},
 			'check_callback' : function (operation, node, node_parent, node_position, more) {
-			if (operation === "move_node"){
-				// Can't create new root node
-				if (node_parent.id === '#'){return false}
-				// New parent must be a location
-				//if (node_parent.li_attr.rel === 'location'){return true}
-				//jsTree_node_properties(node_parent);
-				if (node_parent.state.type === 'thing'){return false}
-			}
-			// Can't copy node
-			if (operation === "copy_node") {return false};
+				if (operation === "move_node"){
+					// Can't create new root node
+					if (node_parent.id === '#'){return false};
+					// New parent must be a location
+					if (node_parent.type === 'thing'){return false};
+					// Can't change order
+					if (node_parent.id === node.parent){return false};
+				}
+				// Can't copy node
+				if (operation === "copy_node") {return false};
 			},
 			"themes" : { "stripes" : true,
 				"name" : "default"
@@ -48,13 +67,13 @@ $(document).ready(function(){
 		},
 		"state" : { "key" : "state_demo" },
 		'types' : {
-			"organisation" : {"icon" : "fa fa-institution"},
-			"location" : {"icon" : "fa fa-building-o"},
+			"organisation" : {"icon" : "fa fa-home fa-lg"},
+			"location" : {"icon" : "fa fa-institution"},
 			//"location" : {"icon" : "<%= asset_path('location.png') %>"},
 			"thing" : { "icon" : "fa fa-dot-circle-o"}
 		},
 		'contextmenu' : {
-			'select_node' : false,
+			'select_node' : true,
 			'items' : function(node) { 
 				var tmp = $.jstree.defaults.contextmenu.items();
 				tmp  = {
@@ -86,8 +105,6 @@ $(document).ready(function(){
 							//if the node to delete is the only node then we wont be able set the node
 							//in the call to updateBreadcrumb in the slect_node event. Therefore, need to get item path
 							//in the controller.
-							//TODO If we store the root path of the tree as a data attribute in #finder, then we wont need to
-							// hit the database to get the full path for the breadcrumb each time we select a node.
 							var select_parent = ( $("#finder").find("li").length === 1 );
 							$.ajax({
 								type: "POST",
@@ -100,7 +117,7 @@ $(document).ready(function(){
 								error: function(){
 									alert("Cannot delete item");
 								}
-							});		
+							});	
 						}
 					},
 					'AddItem' : {
@@ -145,6 +162,7 @@ $(document).ready(function(){
 		}
 	})
 	.on('select_node.jstree', function(e, data){
+		//jsTree_node_properties(data.node);
 		updateBreadcrumb(data.node.id);
 	})
 	.on('move_node.jstree', function(e, data){
@@ -157,7 +175,6 @@ $(document).ready(function(){
 		var moved = data.node.id;
 		var moved_to = data.parent;
 		var position = 0;
-		//alert(data.position);
 		var url = '/items/move_item';
 		$.ajax({ type: 'GET', dataType: 'script', url: url,
 			 data: {node_moved: moved, target_node: moved_to, position: position },
@@ -167,37 +184,26 @@ $(document).ready(function(){
 	});
 })
 
-
 function getBranch(id, root) {
-	$.ajax({
-		type: 'Get', url: '/items/', dataType: 'json', data: { open_id: id, root: root },
-		success: function(newData) {
-			$('#finder').jstree().settings.core.data = newData;
-			$('#finder').jstree(true).refresh(true,true);
-			$('#finder').jstree(true).save_state();
-			updateBreadcrumb(id);
-		}
-	});	
+	$('#finder').data('search', { on: false, query: "" });
+	$("#finder").data("root_id", id);
+	$("#finder").data("show_root", root)
+	$('#finder').jstree(true).refresh(false,true);
+	updateBreadcrumb(id);
 }
 
-function updateBreadcrumb(node_id, parent_item) {
-	parent_item = defaultTo(parent_item, true);
+function updateBreadcrumb(node_id) {
 	$.ajax({
-		type: 'Get', url: '/items/breadcrumb', dataType: 'script', data: { open_id: node_id, parent_item: parent_item },
+		type: 'Get', url: '/items/breadcrumb', dataType: 'script', data: { root_id: node_id },
 		success: function() {
 		}
 	});		
-}
-
-function defaultTo(value, defaultValue) {
-    return typeof value !== "undefined" ? value : defaultValue;
 }
 
 function jsTree_node_properties(node) {
 /* iterates through a jsTree node to display all properties */
 /* pass data.node to function */
 	$.each(node, function(name, value) {
-		/*{ alert(name + " : "  + value) }*/
 		{ console.log(name + " : "  + value) }
 		if ($.type(value) == 'object')
 			{ jsTree_node_properties(value) }

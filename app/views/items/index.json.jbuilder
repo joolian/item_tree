@@ -10,5 +10,5 @@ json.array! @locations do |location|
 	json.a_attr do
 		json.href item_path(id: location.item.id)
 	end
-	json.children false
+	json.children location.has_children?
 end

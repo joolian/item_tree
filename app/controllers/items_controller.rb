@@ -3,6 +3,9 @@ class ItemsController < ApplicationController
   
   def index
     @no_item_records = Item.count ? false : true
+
+      #create_data
+      
     set_tree_root
 		respond_to do |format|
 			format.html
@@ -61,13 +64,11 @@ class ItemsController < ApplicationController
   end
   
   def breadcrumb
-    if params[:open_id] == 'root' then
-      @item_path = Location.roots.first.item.item_path
-    elsif params[:parent_id] == 'true'
-      @item_path = Item.parent_item.item_path
-    else
-      @item_path = Item.find(params[:open_id]).item_path
-    end
+    # TODO a thing has no children, therefore either link to view item, or do nothing
+    # TODO Change js code to allow use of fontawesome and similar
+    # TODO Change js code to enable drag and drop
+    # TODO Change js code to allow context menu
+    @item_path = Item.find(params[:root_id]).item_path
     respond_to do |format|
       format.js
     end
@@ -78,7 +79,6 @@ class ItemsController < ApplicationController
 			Item.move_location(params[:node_moved],params[:target_node])
 		end
 		@locations = Location.location_tree
-		# render: Just need to report success or failure as no need to update jsTree data
 	end 
   
   def search
@@ -92,6 +92,41 @@ class ItemsController < ApplicationController
 			format.json
 		end
   end
+  
+  def children
+    @locations = Item.find(params[:id]).location.children.location_tree
+    respond_to do |format|
+      format.json {render 'index'}
+    end
+  end
+  
+  def create_data
+    # TODO this is crap, fix it
+    Item.destroy_all
+    item = Item.new
+    item.build_location()
+    item.location.is_location = true
+    item.name = "Organisation"
+    item.code = "O1"
+    item.save
+    root_id = item.location.id
+    for i in 1..100 do
+      @item = Item.new
+      @item.name = i
+      @item.code = i
+      @item.build_location(parent_id: root_id)
+      @item.location.is_location = true
+      @item.save
+      parent_id  = @item.location.id
+      for r in 1..10 do
+        inner_item = Item.new
+        inner_item.name = @item.name + "_" + r.to_s
+        inner_item.code = @item.name + "_" + r.to_s
+        inner_item.build_location(parent_id: parent_id)
+        inner_item.save        
+      end
+    end
+  end
    
   private
 	
@@ -99,21 +134,22 @@ class ItemsController < ApplicationController
 		# Note: in use in the FM app the root item will be Organisation,
     # therefore will need to change this method.
     if session[:tree_root] then 
-		  if params[:open_id].present?
-         session[:tree_root] = params[:open_id]
+		  if params[:root_id].present?
+         session[:tree_root] = params[:root_id]
       end
-      if params[:root].present? then
-        session[:show_organisation] = params[:root] == 'true'
+      if params[:show_root].present? then
+        session[:show_root] = params[:show_root] == 'true'
       end
 		else
 			session[:tree_root] = Location.roots.first.item.id
-      session[:show_organisation] = true
+      session[:show_root] = true
 		end
 		@item = Item.find(session[:tree_root])
-    if session[:show_organisation] then
-      @locations = @item.location.subtree.location_tree
+    if session[:show_root] then
+      @locations = []
+      @locations << @item.location
     else
-      @locations = @item.location.descendants.location_tree
+      @locations = @item.location.children.location_tree
     end
 		@item_path = @item.item_path
 	end

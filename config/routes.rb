@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
-  get 'items/search' => 'items#search'
-  get 'items/breadcrumb' => 'items#breadcrumb'
-  get 'items/move_item' => 'items#move_item'	
+  get 'items/children', to: 'items#children'
+  get 'items/search', to: 'items#search'
+  get 'items/breadcrumb', to: 'items#breadcrumb'
+  get 'items/move_item', to: 'items#move_item'
+  get 'items/create_data', to: 'items#create_data'
   resources :items
 
   # The priority is based upon order of creation: first created -> highest priority.
