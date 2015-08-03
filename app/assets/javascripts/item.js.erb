@@ -1,7 +1,7 @@
 // TODO Add copy, cut, paste. Need to make sure that store cut/copy data between tree refresh
 //	otherwise will probably loose it
 // TODO put 'Cannot delete' message in proper dialog
-// TODO when all text in search box is deleted then clear nodes
+
 // TODO change styling of context menu
 // TODO Implement Load all without easy loading
 // TODO Update JStree version 1 form control for selecting an item, will need filter and branch pre-selection
@@ -21,11 +21,9 @@ $(document).ready(function(){
 		var query = $(this).val();
 		if (query.length >= 1 ){
 			$('#finder').data('search', { on: true, query: query });
-			//$('#finder').jstree(true).refresh();
 		}
 		else {
-			$('#finder').data('search', { on: false, query: query });
-			//$('#finder').jstree(true).refresh();
+			$('#finder').data('search', { on: false, query: "" });
 		}
 		$('#finder').jstree(true).refresh();
 	});
