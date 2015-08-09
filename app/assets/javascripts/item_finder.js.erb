@@ -5,27 +5,28 @@
 // TODO change styling of context menu
 // TODO Implement Load all without easy loading
 // TODO Update JStree version 1 form control for selecting an item, will need filter and branch pre-selection
-
+// TODO What to do when add item to item in search list?
 $(document).ready(function(){
 	//Change variable names and refactor
 	$('#item_path').on( "click", "a", function(event) {
 		event.preventDefault();
 		var id = $(this).data('id');
 		var root = $(this).data('root');
-		getBranch(id, root);
+		getBranch(id, root, $("#finder"));
 	});
 	
 	$('#item_path').jBreadCrumb();
 	
 	$('#search').on('keyup', function() {
+		var tree = $('#finder');
 		var query = $(this).val();
 		if (query.length >= 1 ){
-			$('#finder').data('search', { on: true, query: query });
+			tree.data('search', { on: true, query: query });
 		}
 		else {
-			$('#finder').data('search', { on: false, query: "" });
+			tree.data('search', { on: false, query: "" });
 		}
-		$('#finder').jstree(true).refresh();
+		tree.jstree(true).refresh();
 	});
 	
 	$('#finder').jstree({
@@ -33,17 +34,19 @@ $(document).ready(function(){
 			'expand_selected_onload' : false,
 			'data' : {
 				'url' : function(node) {
-					if ($('#finder').data('search').on === true) 
+					var tree = jstree_container(node);
+					if (tree.data('search').on === true) 
 						{ return '/items/search' }
 					else
 						{ return node.id === "#" ? "/items" : "/items/children"; }
 				},
 				'data' : function (node) {
-					if ($('#finder').data('search').on === true)
-						{ return { query: $('#finder').data('search').query}}
+					var tree = jstree_container(node);
+					if (tree.data('search').on === true)
+						{ return { query: tree.data('search').query}}
 					else {
 						if (node.id === "#")
-							{return {'root_id' : $("#finder").data("root_id"), 'show_root' : $("#finder").data("show_root")};
+							{return {'root_id' : tree.data("root_id"), 'show_root' : tree.data("show_root")};
 						}
 						else {
 							return {'id' : node.id};
@@ -108,7 +111,7 @@ $(document).ready(function(){
 							//if the node to delete is the only node then we wont be able set the node
 							//in the call to updateBreadcrumb in the slect_node event. Therefore, need to get item path
 							//in the controller.
-							var select_parent = ( $("#finder").find("li").length === 1 );
+							var select_parent = ( jstree_container(node_obj).find("li").length === 1 );
 							$.ajax({
 								type: "POST",
 								url: "/items/" + node_obj.id,
@@ -138,7 +141,7 @@ $(document).ready(function(){
 							var inst = $.jstree.reference(data.reference);
 							node_obj = inst.get_node(data.reference);
 							if (node_obj.type != "thing"){
-								getBranch(node_obj.id, false);	
+								getBranch(node_obj.id, false, jstree_container(node_obj));	
 							}					
 						},
 					}	
@@ -187,11 +190,11 @@ $(document).ready(function(){
 	});
 })
 
-function getBranch(id, root) {
-	$('#finder').data('search', { on: false, query: "" });
-	$("#finder").data("root_id", id);
-	$("#finder").data("show_root", root)
-	$('#finder').jstree(true).refresh(false,true);
+function getBranch(id, root, container) {
+	container.data('search', { on: false, query: "" });
+	container.data("root_id", id);
+	container.data("show_root", root)
+	container.jstree(true).refresh(false,true);
 	updateBreadcrumb(id);
 }
 
@@ -211,4 +214,8 @@ function jsTree_node_properties(node) {
 		if ($.type(value) == 'object')
 			{ jsTree_node_properties(value) }
 	});
+}
+
+function jstree_container(node) {
+	return $.jstree.reference(node).get_container();
 }

@@ -1,0 +1,14 @@
+.item-select-text {
+	border-radius: 4px 0px 0px 4px;
+	border-right-style: none;
+}
+.item-select {
+	display: none;
+	background-color: white;
+	border:solid 1px $input-border;
+	width: 250px;
+	height: 200px;
+	border-radius: 0px 4px 4px 4px;
+	position: absolute;
+	overflow: scroll;
+}

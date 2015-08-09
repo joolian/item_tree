@@ -12,8 +12,10 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.ui.all
 //= require jstree
-//= require item
+//= require item_finder
+//= requiew item_select
 //= require jquery.easing.1.3.js
 //= require jquery.jBreadCrumb.1.1.js
 //= require turbolinks

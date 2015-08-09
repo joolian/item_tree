@@ -1,0 +1,3 @@
+  <%= text_field_tag "select-item-search", @job.item.nil? ? "" : @job.item.name, class: "item-select-text", autocomplete: "off" %>
+  <%= button_tag 'Select', type: 'button', class: 'item-select-button' %>
+  <div class="item-select" data-root_id = <%= @root %> data-show_root = true data-search = "{on : false,  query = ''}"></div>

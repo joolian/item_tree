@@ -5,6 +5,7 @@ class ItemsController < ApplicationController
     @no_item_records = Item.count ? false : true
     #create_data 
     set_tree_root
+    get_locations
 		respond_to do |format|
 			format.html
 			format.json
@@ -16,6 +17,7 @@ class ItemsController < ApplicationController
 
   def new
     @item = Item.new
+    # TODO Move the building of a new item into the model
     parent_id = Item.find(params[:item_id]).location.id if params[:item_id]
 		@item.build_location(parent_id: parent_id)
   end
@@ -74,11 +76,7 @@ class ItemsController < ApplicationController
 	end 
   
   def search
-    if params[:query].present? then
-      @locations = Item.text_search(params[:query])      
-    else
-      set_tree_root
-    end
+    @locations = Item.text_search(params[:query])      
 		respond_to do |format|
 			format.json
 		end
@@ -135,7 +133,10 @@ class ItemsController < ApplicationController
 			session[:tree_root] = Item.root.id   
       session[:show_root] = true
 		end
-		@item = Item.find(session[:tree_root])
+  end
+		
+  def get_locations  
+    @item = Item.find(session[:tree_root])
     if session[:show_root] then
       @locations = []
       @locations << @item.location

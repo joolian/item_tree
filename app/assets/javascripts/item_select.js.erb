@@ -1,0 +1,117 @@
+$(document).ready(function(){
+// TODO make sure stuff only happens when elements are on the page
+// TODO make sure everything works when adding elements after page load
+
+	var $selector = $(".item-select-button");
+	//formats the item select button on page load
+	if($selector.length) { select_item_button_format(); }
+	
+	$('.item-select-text').on('keyup', function() {
+		var tree = $(this).nextAll(".item-select");
+		var query = $(this).val();
+		// Clear item id so that can only set item id by making a selection in the tree
+		$(this).siblings(".item-select-id").val("");
+		if (query.length >= 1 ){
+			tree.data('search', { on: true, query: query });
+		}
+		else {
+			tree.data('search', { on: false, query: "" });
+		}
+		tree.jstree().deselect_all(true);
+		tree.jstree(true).refresh(true, false);
+	});
+
+	//toggle tree when click on button
+	$(document).on('click', ".item-select-button", function(e) {  
+	e.stopPropagation();  
+	var tree = $(this).siblings(".item-select");
+	if (tree.css("display") == 'none') 
+		{ tree.show(); }
+	else
+		{ tree.hide() }
+	});
+	
+	// Show tree when click on text box
+	$(document).on('click', ".item-select-text", function(e) {  
+		e.stopPropagation();  
+		var tree = $(this).siblings(".item-select");
+		if (tree.css("display") == 'none') { tree.show(); }
+	});
+
+	//close tree when click outside
+	$(document).click(function(e) {
+		$(".item-select").hide();
+	}); 
+	// prevent clicking on tree propagating up to document and closing tree
+	$('.item-select').click(function(e) {
+		e.stopPropagation();
+		return false;
+	});
+	
+	$('.item-select').jstree({
+		"core" : {
+			'expand_selected_onload' : false,
+			'data' : {
+				'url' : function(node) {
+					var tree = jstree_container(node);
+					if (tree.data('search').on === true) 
+						{ return '/items/search' }
+					else
+						{ return node.id === "#" ? "/items" : "/items/children"; }
+				},
+				'data' : function (node) {
+					var tree = jstree_container(node);
+					if (tree.data('search').on === true)
+						{ return { query: tree.data('search').query}}
+					else {
+						if (node.id === "#")
+							{return {'root_id' : tree.data("root_id"), 'show_root' : tree.data("show_root")};
+						}
+						else {
+							return {'id' : node.id};
+						}
+					}
+				},
+				'dataType' : 'json'
+			},
+			'check_callback' : function (operation, node, node_parent, node_position, more) {
+				return false;
+			},
+			"themes" : { "stripes" : true,
+				"name" : "default"
+	 		}
+		},
+		'types' : {
+			"organisation" : {"icon" : "fa fa-home fa-lg"},
+			"location" : {"icon" : "fa fa-institution"},
+			//"location" : {"icon" : "<%= asset_path('location.png') %>"},
+			"thing" : { "icon" : "fa fa-dot-circle-o"}
+		},
+		"plugins" : [ "types", "wholerow" ]
+	})
+
+	.on('select_node.jstree', function(e, data){
+		var tree = jstree_container(data.node)
+		// set item text
+		tree.siblings(".item-select-text").val(data.node.text);
+		// set item id
+		tree.siblings(".item-select-id").val(data.node.id);
+		tree.delay(2000).hide();
+	})
+})
+
+function select_item_button_format() {
+  $(".item-select-button").each(function(index){
+    select_button = $(this);
+    var item_name = select_button.siblings(".item-select-text");
+    var h = item_name.outerHeight() + "px";
+    select_button.button({
+      icons: {
+        primary: "ui-icon-triangle-1-s"
+	  },text: false
+    }).css('height', h).css('width', "30px")
+    .position({ my: "left top",at: "right top", of: item_name
+    }).removeClass('ui-corner-all')
+    .addClass("ui-corner-right");
+  });
+};

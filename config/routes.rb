@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :jobs
   get 'items/children', to: 'items#children'
   get 'items/search', to: 'items#search'
   get 'items/breadcrumb', to: 'items#breadcrumb'

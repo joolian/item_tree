@@ -4,10 +4,10 @@ one:
   ancestry: MyString
   is_location: false
   ancestry: MyString
-  item_id: 1
+  item: one
 
 two:
   ancestry: MyString
   is_location: false
   ancestry: MyString
-  item_id: 1
+  item: two

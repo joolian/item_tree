@@ -16,6 +16,9 @@ gem 'coffee-rails', '~> 4.1.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
+#gem 'jquery-ui-rails'
+gem 'jquery-ui-sass-rails'
+
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -48,6 +51,9 @@ group :development, :test do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  
+  #gem 'factory_girl_rails'
+  #gem 'rspec-rails'
 end
 # For deplyment to Heroku
 gem 'rails_12factor', group: :production

@@ -1,11 +1,10 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+# TODO Need a way to build the tree ERB?
 one:
-  ancestry: MyString
-  name: MyString
-  code: MyString
+  name: House
+  code: H-001
 
 two:
-  ancestry: MyString
-  name: MyString
-  code: MyString
+  name: Hallway
+  code: H-002
