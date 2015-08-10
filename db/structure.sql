@@ -104,8 +104,7 @@ CREATE TABLE locations (
     is_location boolean DEFAULT false,
     item_id integer,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    ancestry_depth integer DEFAULT 0
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -212,8 +211,6 @@ SET search_path TO "$user",public;
 INSERT INTO schema_migrations (version) VALUES ('20150602203715');
 
 INSERT INTO schema_migrations (version) VALUES ('20150602210440');
-
-INSERT INTO schema_migrations (version) VALUES ('20150723202909');
 
 INSERT INTO schema_migrations (version) VALUES ('20150804202832');
 
