@@ -42,12 +42,12 @@ class Item < ActiveRecord::Base
   def item_path
     # Returns
     self.location.path.location_tree.map{ |ancestor|ancestor.item }
-	end
+  end
 
-	def can_be_destroyed
+  def can_be_destroyed
     # TODO this is unnecessary if set ancestry options to :orphan_strategy is :restrict
     # TODO test for the root node: can't delete that
     self.location.is_childless? ? true : false
-	end
+  end
 
 end
