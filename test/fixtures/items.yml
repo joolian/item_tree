@@ -1,10 +1,31 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-# TODO Need a way to build the tree ERB?
-one:
+house:
   name: House
   code: H-001
 
-two:
-  name: Hallway
+hall:
+  name: Hall
   code: H-002
+
+bathroom:
+  name: Bathroom
+  code: H-003
+
+lounge:
+  name: Lounge
+  code: H-004
+  
+armchair:
+  name: Armchair
+  code: AC-001
+
+umbrella:
+  name: Umbrella
+  code: U-001
+
+garden:
+  name: Garden
+  code: H-006
+
+  

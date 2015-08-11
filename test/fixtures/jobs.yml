@@ -1,11 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-peel:
-  description: Peel off outer coating
+paint:
+  description: Paint with jam
   done: false
-  item: one
+  item: house
 
 rub:
   description: Rub down gently
   done: false
-  item: two
+  item: house

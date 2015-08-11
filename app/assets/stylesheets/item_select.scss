@@ -1,5 +1,9 @@
 .item-select-text {
-	border-radius: 4px 0px 0px 4px;
+	border-radius: $corner 0px 0px $corner;
+	border-right-style: none;
+}
+.item-select-text:focus {
+	border-radius: $corner 0px 0px $corner;
 	border-right-style: none;
 }
 .item-select {
@@ -8,7 +12,7 @@
 	border:solid 1px $input-border;
 	width: 250px;
 	height: 200px;
-	border-radius: 0px 4px 4px 4px;
+	border-radius: 0px $corner $corner $corner;
 	position: absolute;
 	overflow: scroll;
 }

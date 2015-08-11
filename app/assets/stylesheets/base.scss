@@ -21,7 +21,7 @@ input {
 		font-size: 12px;
 		font-family: Verdana,Arial,sans-serif;
 		border: 1px solid $input-border;
-		border-radius: 4px;	
+		border-radius: $corner;	
 		padding:3px;
 }
 input:focus{

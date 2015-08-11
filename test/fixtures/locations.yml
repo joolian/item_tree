@@ -1,13 +1,38 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  ancestry: MyString
-  is_location: false
-  ancestry: MyString
-  item: one
+house_place:
+  ancestry:
+  is_location: true
+  item: house
 
-two:
-  ancestry: MyString
+hall_place:
+  ancestry:
+  is_location: true
+  item: hall
+
+bathroom_place:
+  ancestry:
+  is_location: true
+  item: bathroom
+
+lounge_place:
+  ancestry:
+  is_location: true
+  item: lounge
+
+armchair_thing:
+  ancestry:
   is_location: false
-  ancestry: MyString
-  item: two
+  item: armchair
+
+umbrella_thing:
+  ancestry:
+  is_location: false
+  item: umbrella
+
+garden_place:
+  ancestry:
+  is_location: true
+  item: garden
+
+   

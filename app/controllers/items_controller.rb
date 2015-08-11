@@ -17,9 +17,8 @@ class ItemsController < ApplicationController
 
   def new
     @item = Item.new
-    # TODO Move the building of a new item into the model
     parent_id = Item.find(params[:item_id]).location.id if params[:item_id]
-		@item.build_location(parent_id: parent_id)
+    @item.build_location(parent_id: parent_id)
   end
 
   def edit
@@ -27,22 +26,18 @@ class ItemsController < ApplicationController
 
   def create
     @item = Item.new(item_params)
-    respond_to do |format|
-      if @item.save
-        format.html { redirect_to items_path}
-      else
-        format.html { render action: 'new'}
-      end
+    if @item.save
+      redirect_to items_path
+    else
+      render action: 'new'
     end
   end
 
   def update
-    respond_to do |format|
-      if @item.update(item_params)
-        format.html { redirect_to @item, notice: 'Item was successfully updated.' }
-      else
-        format.html { render action: 'edit' }
-      end
+    if @item.update(item_params)
+      redirect_to @item, notice: 'Item was successfully updated.'
+    else
+      render action: 'edit'
     end
   end
 
@@ -69,10 +64,14 @@ class ItemsController < ApplicationController
   end
   
 	def move_item
-		if params[:node_moved] then
-			Item.move_location(params[:node_moved],params[:target_node])
+		if params[:node_moved]
+			if Item.move_location(params[:node_moved],params[:target_node])
+        render "move_item"
+      else
+        render status: 400
+      end
 		end
-		@locations = Location.location_tree
+		#@locations = Location.location_tree
 	end 
   
   def search
@@ -122,11 +121,11 @@ class ItemsController < ApplicationController
   def set_tree_root
 		# Note: in use in the FM app the root item will be Organisation,
     # therefore will need to change this method.
-    if session[:tree_root] then 
+    if session[:tree_root]
 		  if params[:root_id].present?
          session[:tree_root] = params[:root_id]
       end
-      if params[:show_root].present? then
+      if params[:show_root].present?
         session[:show_root] = params[:show_root] == 'true'
       end
 		else
@@ -137,7 +136,7 @@ class ItemsController < ApplicationController
 		
   def get_locations  
     @item = Item.find(session[:tree_root])
-    if session[:show_root] then
+    if session[:show_root]
       @locations = []
       @locations << @item.location
     else

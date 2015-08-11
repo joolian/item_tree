@@ -4,22 +4,20 @@ class Item < ActiveRecord::Base
 	accepts_nested_attributes_for :location, allow_destroy: true, reject_if: :all_blank
   validates :name, presence: true
   validates :code, presence: true, uniqueness: { case_sensitive: false }
+  
   #TODO
   # Need a validation so that an item that is a location cannot be changed to a thing if it has children.
   # Add indxes to name and code
   
-  def self.move_location(moved, moved_to)
+  def self.move_location(moved_id, moved_to_id)
   # Used in conjuction with jstree drag and drop. 'moved' is the item dragged and dropped.
   # 'moved_to' is the item dropped onto.
   # 'position' is the position relative to 'moved_to'.
-    if moved then
-      location_moved = Item.find(moved).location
-      new_parent_id = Item.find(moved_to).location.id
-      if location_path_is_continuous(new_parent_id) then
-        location_moved.parent_id = new_parent_id
-      	location_moved.save
-      	return location_moved.parent_id
-      end
+    if moved_id
+      location_moved = Item.find(moved_id).location
+      new_parent_id = Item.find(moved_to_id).location.id
+      location_moved.parent_id = new_parent_id
+      location_moved.save ? true : false
     end
   end
   
@@ -28,20 +26,12 @@ class Item < ActiveRecord::Base
     Location.roots.first.item
   end
 
-  def self.location_path_is_continuous(new_parent_id)
-    # The parent must be a location not a thing
-    Location.find(new_parent_id).is_location ? true : false
-  end
-
   def self.text_search(query)
     Location.location_tree.where( "items.name ilike :q", q: "%#{query}%"  ).references(:items)
   end
 
   def parent_item
-    # Returns the parent item
-    if self.location.parent_id then
-      Location.find(self.location.parent_id).item
-    end
+    self.location.parent.item if self.location.parent
   end
 
   def children
