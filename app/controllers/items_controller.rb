@@ -1,15 +1,15 @@
 class ItemsController < ApplicationController
-  before_action :set_item, only: [:show, :edit, :update, :destroy]
-  
+before_action :set_item, only: [:show, :edit, :update, :destroy]
+
   def index
     @no_item_records = Item.count ? false : true
     #create_data 
     set_tree_root
     get_locations
-		respond_to do |format|
-			format.html
-			format.json
-		end
+    respond_to do |format|
+      format.html
+      format.json
+    end
   end
   
   def show
@@ -42,14 +42,13 @@ class ItemsController < ApplicationController
   end
 
   def destroy
-		#if @item.location.can_be_destroyed
     if @item.can_be_destroyed     
       @item_path = params[:select_parent] == "true" ? @item.parent_item.item_path : false
-			@item.destroy
-			render "destroy.js.erb"
-		else
-			render status: 400
-		end
+      @item.destroy
+      render "destroy.js.erb"
+    else
+      render status: 400
+    end
   end
   
   def breadcrumb
@@ -63,22 +62,21 @@ class ItemsController < ApplicationController
     end
   end
   
-	def move_item
-		if params[:node_moved]
-			if Item.move_location(params[:node_moved],params[:target_node])
+  def move_item
+    if params[:node_moved]
+      if Item.move_location(params[:node_moved],params[:target_node])
         render "move_item"
       else
         render status: 400
       end
-		end
-		#@locations = Location.location_tree
-	end 
+    end
+  end 
   
   def search
     @locations = Item.text_search(params[:query])      
-		respond_to do |format|
-			format.json
-		end
+    respond_to do |format|
+      format.json
+    end
   end
   
   def children
@@ -119,19 +117,19 @@ class ItemsController < ApplicationController
   private
 	
   def set_tree_root
-		# Note: in use in the FM app the root item will be Organisation,
+    # Note: in use in the FM app the root item will be Organisation,
     # therefore will need to change this method.
     if session[:tree_root]
-		  if params[:root_id].present?
-         session[:tree_root] = params[:root_id]
+      if params[:root_id].present?
+        session[:tree_root] = params[:root_id]
       end
       if params[:show_root].present?
         session[:show_root] = params[:show_root] == 'true'
       end
-		else
-			session[:tree_root] = Item.root.id   
+    else
+      session[:tree_root] = Item.root.id   
       session[:show_root] = true
-		end
+    end
   end
 		
   def get_locations  
@@ -142,8 +140,8 @@ class ItemsController < ApplicationController
     else
       @locations = @item.children
     end
-		@item_path = @item.item_path
-	end
+      @item_path = @item.item_path
+  end
     
   def set_item
     @item = Item.find(params[:id])
