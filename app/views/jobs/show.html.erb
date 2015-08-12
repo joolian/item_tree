@@ -1,19 +1,25 @@
-<p id="notice"><%= notice %></p>
+<div class="content">
+	<h1>Job</h1>
+	<p id="notice"><%= notice %></p>
+	<div class="edit-table">
+		<div class="edit-row">
+			<div class="edit-cell">Description:</div>
+			<div class="edit-cell"><%= @job.description %></div>
+		</div>
+		<div class="edit-row">
+			<div class="edit-cell">Done:</div>
+			<div class="edit-cell"><%= @job.done %></div>
+		</div>
+		<div class="edit-row">
+			<div class="edit-cell">Item:</div>
+			<div class="edit-cell"><%= @job.item.name %></div>
+		</div>
 
-<p>
-  <strong>Description:</strong>
-  <%= @job.description %>
-</p>
-
-<p>
-  <strong>Done:</strong>
-  <%= @job.done %>
-</p>
-
-<p>
-  <strong>Item:</strong>
-  <%= @job.item.name %>
-</p>
-
-<%= link_to 'Edit', edit_job_path(@job) %> |
-<%= link_to 'Back', jobs_path %>
+		<div class="edit-row">
+			<div class="edit-cell">
+				<%= link_to 'Edit', edit_job_path(@job) %> |
+				<%= link_to 'Back', jobs_path %>
+			</div>
+		</div>
+	</div>
+</div>

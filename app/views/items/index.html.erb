@@ -1,15 +1,16 @@
-
 <div class='content'>
 	<h1>Items</h1>
-	<div><%#= link_to 'Create data', items_create_data_path %>
-	<div class="instructions">For navigation and functions: click on the breadcrumb, right click on an item in the tree for the context menu, drag and drop.</div>
+	<div class="instructions">
+		<p>For navigation and functions: click on the breadcrumb, right click on an item in the tree for the context menu, drag and drop.</p>
+	</div>
 	<div id="search-field">
 		<div class="centered">Search by name</div>
 		<div class="centered"><input type="text", id="search"></div>
 		<div class="centered"><%= link_to fa_stacked_icon('times inverse lg', base: 'circle'), items_path, title: 'Clear search' %></div>
 	</div>
 	<div>
-	<%= link_to 'Create first item', new_item_path if @no_item_records %>
+		<%= link_to 'Create first item', new_item_path if @no_item_records %>
+	</div>
 	<div id="finder" data-root_id = <%= session[:tree_root] %> data-search = "{on : false,  query = ''}" >
 	</div>
 	<div class="breadCrumbHolder module">
@@ -19,5 +20,5 @@
 	</div>
 	<div>
 		<%= link_to "Jobs", jobs_path %>
+	</div>
 </div>
-	

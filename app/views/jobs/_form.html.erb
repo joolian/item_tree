@@ -1,31 +1,34 @@
 <%= form_for(@job) do |f| %>
-  <% if @job.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@job.errors.count, "error") %> prohibited this job from being saved:</h2>
-
-      <ul>
-      <% @job.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :description %><br>
-    <%= f.text_area :description %>
-  </div>
-  <div class="field">
-    <%= f.label :done %><br>
-    <%= f.check_box :done %>
-  </div>
-  <div class="field">
-    <%= f.label :item_id %><br>
-    <%= f.hidden_field :item_id, class: 'item-select-id'%>
-	<%= render "items/item_select" %>
-  </div>
-  	
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+	<% if @job.errors.any? %>
+		<div id="error_explanation">
+			<h2><%= pluralize(@job.errors.count, "error") %> prohibited this job from being saved:</h2>
+			<ul>
+				<% @job.errors.full_messages.each do |message| %>
+					<li><%= message %></li>
+				<% end %>
+			</ul>
+		</div>
+	<% end %>
+	
+	<div class="edit-table">
+		<div class="edit-row">
+			<div class="edit-cell"><%= f.label :description %></div>
+			<div class="edit-cell"><%= f.text_area :description %></div>
+		</div>
+		<div class="edit-row">
+			<div class="edit-cell"><%= f.label :done %></div>
+			<div class="edit-cell"><%= f.check_box :done %></div>
+		</div>
+		<div class="edit-row">
+			<div class="edit-cell"><%= f.label :item_id %></div>
+			<div class="edit-cell">
+				<%= f.hidden_field :item_id, class: 'item-select-id'%>
+				<%= render "items/item_select" %>
+			</div>
+		</div>
+		<div class="edit-row">
+			<div class="edit-cell"><%= f.submit %></div>
+		</div>
+	</div>
+	
 <% end %>

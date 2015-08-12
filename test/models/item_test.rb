@@ -76,7 +76,11 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal thing.parent_item.id, thing_parent.id
   end
   test "children returns a collection of the children" do
-    
+    item = items(:house)
+    child_1 = items(:hall)
+    child_2 =items(:garden)
+    assert_includes item.children, child_1.location
+    assert_includes item.children, child_2.location
   end
   test "item_path should return the path to the root as an array of items" do
     
