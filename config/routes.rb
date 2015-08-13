@@ -1,11 +1,12 @@
 Rails.application.routes.draw do
   resources :jobs
+  resources :items
   get 'items/children', to: 'items#children'
   get 'items/search', to: 'items#search'
   get 'items/breadcrumb', to: 'items#breadcrumb'
   get 'items/move_item', to: 'items#move_item'
   get 'items/create_data', to: 'items#create_data'
-  resources :items
+  #resources :items
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

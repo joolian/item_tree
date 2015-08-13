@@ -53,4 +53,5 @@ class LocationTest < ActiveSupport::TestCase
     place.item_id = 100
     assert_not place.save
   end
+  
 end

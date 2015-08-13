@@ -42,11 +42,11 @@ before_action :set_item, only: [:show, :edit, :update, :destroy]
   end
 
   def destroy
-    if @item.can_be_destroyed     
+    begin
       @item_path = params[:select_parent] == "true" ? @item.parent_item.item_path : false
       @item.destroy
       render "destroy.js.erb"
-    else
+    rescue
       render status: 400
     end
   end

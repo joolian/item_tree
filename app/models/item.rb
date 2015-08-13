@@ -4,6 +4,7 @@ class Item < ActiveRecord::Base
 	accepts_nested_attributes_for :location, allow_destroy: true, reject_if: :all_blank
   validates :name, presence: true
   validates :code, presence: true, uniqueness: { case_sensitive: false }
+  before_destroy :can_be_destroyed?
   
   #TODO
   # Need a validation so that an item that is a location cannot be changed to a thing if it has children.
@@ -44,10 +45,9 @@ class Item < ActiveRecord::Base
     self.location.path.location_tree.map{ |ancestor|ancestor.item }
   end
 
-  def can_be_destroyed
-    # TODO this is unnecessary if set ancestry options to :orphan_strategy is :restrict
-    # TODO test for the root node: can't delete that
-    self.location.is_childless? ? true : false
+  def can_be_destroyed?
+    # Can't delete the root node
+    self.location.parent_id ? true : false
   end
 
 end
