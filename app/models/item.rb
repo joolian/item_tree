@@ -5,10 +5,11 @@ class Item < ActiveRecord::Base
   validates :name, presence: true
   validates :code, presence: true, uniqueness: { case_sensitive: false }
   before_destroy :can_be_destroyed?
+
+  delegate :is_location, :has_children?, :root?, to: :location, prefix: false
   
   #TODO
-  # Need a validation so that an item that is a location cannot be changed to a thing if it has children.
-  # Add indxes to name and code
+  # Add index to name
   
   def self.move_location(moved_id, moved_to_id)
   # Used in conjuction with jstree drag and drop. 'moved' is the item dragged and dropped.
@@ -23,31 +24,51 @@ class Item < ActiveRecord::Base
   end
   
   def self.root
-    #the root item of the locations tree
+    # The root item of the item tree.
     Location.roots.first.item
   end
-
+  
+  def self.get_locations(item, show_root)
+    if show_root
+      locations = []
+      locations << item.location
+    else
+      locations = item.children
+    end  
+  end
+  
   def self.text_search(query)
     Location.location_tree.where( "items.name ilike :q", q: "%#{query}%"  ).references(:items)
   end
-
+  
   def parent_item
+    # The parent item of the item.
     self.location.parent.item if self.location.parent
   end
-
+  
   def children
-    # Returns all the child locations of an item, including the items
+    # Returns all the child locations of an item, including the items.
     self.location.children.location_tree
   end
 
   def item_path
-    # Returns
+    # Returns the path to root as an array of items.
     self.location.path.location_tree.map{ |ancestor|ancestor.item }
   end
+  
+  def item_type
+  	if self.root?
+  		return "organisation"
+  	else
+  		return self.is_location ? "location" : "thing"
+  	end
+  end
 
+  
+  private
   def can_be_destroyed?
-    # Can't delete the root node
-    self.location.parent_id ? true : false
+    # Can't delete the root node.
+    self.root? ? false : true    
   end
 
 end

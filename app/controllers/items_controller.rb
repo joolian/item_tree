@@ -1,11 +1,12 @@
 class ItemsController < ApplicationController
-before_action :set_item, only: [:show, :edit, :update, :destroy]
+  before_action :set_item, only: [:show, :edit, :update, :destroy]
 
   def index
     @no_item_records = Item.count ? false : true
-    #create_data 
     set_tree_root
-    get_locations
+    root_item = Item.find(session[:tree_root])
+    @locations = Item.get_locations(root_item, session[:show_root])
+    @item_path = root_item.item_path
     respond_to do |format|
       format.html
       format.json
@@ -27,7 +28,7 @@ before_action :set_item, only: [:show, :edit, :update, :destroy]
   def create
     @item = Item.new(item_params)
     if @item.save
-      redirect_to items_path
+      redirect_to items_path, notice: 'Item was successfully created.'
     else
       render action: 'new'
     end
@@ -57,9 +58,6 @@ before_action :set_item, only: [:show, :edit, :update, :destroy]
     # TODO Change js code to enable drag and drop
     # TODO Change js code to allow context menu
     @item_path = Item.find(params[:root_id]).item_path
-    respond_to do |format|
-      format.js
-    end
   end
   
   def move_item
@@ -74,20 +72,16 @@ before_action :set_item, only: [:show, :edit, :update, :destroy]
   
   def search
     @locations = Item.text_search(params[:query])      
-    respond_to do |format|
-      format.json
-    end
   end
   
   def children
     @locations = Item.find(params[:id]).children
-    respond_to do |format|
-      format.json {render 'index'}
-    end
+    render 'index.json.jbuilder'
   end
   
   def create_data
     # TODO this is crap, fix it
+    # TODO move into model
     Item.destroy_all
     item = Item.new
     item.build_location()
@@ -130,17 +124,6 @@ before_action :set_item, only: [:show, :edit, :update, :destroy]
       session[:tree_root] = Item.root.id   
       session[:show_root] = true
     end
-  end
-		
-  def get_locations  
-    @item = Item.find(session[:tree_root])
-    if session[:show_root]
-      @locations = []
-      @locations << @item.location
-    else
-      @locations = @item.children
-    end
-      @item_path = @item.item_path
   end
     
   def set_item

@@ -39,19 +39,28 @@ class LocationTest < ActiveSupport::TestCase
     @armchair_thing = nil
     @umbrella_thing = nil
     @garden_place = nil
+    @house = nil
+    @hall = nil
+    @bathroom = nil
+    @lounge = nil
+    @armchair = nil
+    @umbrella = nil
+    @garden = nil    
   end
   
   test "parent should not be a thing" do
-    place = locations(:bathroom_place)
-    thing = locations(:armchair_thing)   
-    place.parent_id  = thing.id
-    assert_not place.save
+    @bathroom_place.parent_id = @armchair_thing.id
+    assert_not @bathroom_place.save
   end
   
   test "should not save location without an item" do
-    place = @house_place
-    place.item_id = 100
-    assert_not place.save
+    @house_place.item_id =100
+    assert_not @house_place.save
+  end
+  
+  test "Should not allow an item with children to be changed to a thing" do
+    @house_place.is_location = false
+    assert_not @house_place.save
   end
   
 end
